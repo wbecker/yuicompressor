@@ -515,6 +515,7 @@ public class JavaScriptCompressor {
 
     private ErrorReporter logger;
 
+    private boolean manualEval;
     private boolean munge;
     private boolean verbose;
 
@@ -536,11 +537,12 @@ public class JavaScriptCompressor {
         this.tokens = parse(in, reporter);
     }
 
-    public void compress(Writer out, int linebreak, boolean munge, boolean verbose,
+    public void compress(Writer out, int linebreak, boolean munge, boolean manualEval, boolean verbose,
             boolean preserveAllSemiColons, boolean disableOptimizations)
             throws IOException {
 
         this.munge = munge;
+	this.manualEval = manualEval;
         this.verbose = verbose;
 
         processStringLiterals(this.tokens, !disableOptimizations);
@@ -848,7 +850,7 @@ public class JavaScriptCompressor {
 
                     if (mode == BUILDING_SYMBOL_TREE) {
 
-                        if (symbol.equals("eval")) {
+                        if (!manualEval && symbol.equals("eval")) {
 
                             protectScopeFromObfuscation(currentScope);
                             warn("Using 'eval' is not recommended." + (munge ? " Moreover, using 'eval' reduces the level of compression!" : ""), true);
@@ -1001,7 +1003,7 @@ public class JavaScriptCompressor {
 
                     if (mode == BUILDING_SYMBOL_TREE) {
 
-                        if (symbol.equals("eval")) {
+                        if (!manualEval && symbol.equals("eval")) {
 
                             protectScopeFromObfuscation(scope);
                             warn("Using 'eval' is not recommended." + (munge ? " Moreover, using 'eval' reduces the level of compression!" : ""), true);

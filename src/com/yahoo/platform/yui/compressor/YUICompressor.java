@@ -23,6 +23,7 @@ public class YUICompressor {
         CmdLineParser.Option typeOpt = parser.addStringOption("type");
         CmdLineParser.Option verboseOpt = parser.addBooleanOption('v', "verbose");
         CmdLineParser.Option nomungeOpt = parser.addBooleanOption("nomunge");
+	CmdLineParser.Option manualEvalOpt = parser.addBooleanOption("manualeval");
         CmdLineParser.Option linebreakOpt = parser.addStringOption("line-break");
         CmdLineParser.Option preserveSemiOpt = parser.addBooleanOption("preserve-semi");
         CmdLineParser.Option disableOptimizationsOpt = parser.addBooleanOption("disable-optimizations");
@@ -166,10 +167,11 @@ public class YUICompressor {
                             }
 
                             boolean munge = parser.getOptionValue(nomungeOpt) == null;
+			    boolean manualEval = parser.getOptionValue(manualEvalOpt) != null;
                             boolean preserveAllSemiColons = parser.getOptionValue(preserveSemiOpt) != null;
                             boolean disableOptimizations = parser.getOptionValue(disableOptimizationsOpt) != null;
 
-                            compressor.compress(out, linebreakpos, munge, verbose,
+                            compressor.compress(out, linebreakpos, munge, manualEval, verbose,
                                     preserveAllSemiColons, disableOptimizations);
 
                         } catch (EvaluatorException e) {
@@ -245,6 +247,7 @@ public class YUICompressor {
 
                         + "JavaScript Options\n"
                         + "  --nomunge                 Minify only, do not obfuscate\n"
+			+ "  --manualeval              Don't care about eval\n"
                         + "  --preserve-semi           Preserve all semicolons\n"
                         + "  --disable-optimizations   Disable all micro optimizations\n\n"
 
